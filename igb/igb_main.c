@@ -1197,8 +1197,7 @@ static int igb_alloc_q_vector(struct igb_adapter *adapter,
 		return -ENOMEM;
 
 	/* initialize NAPI */
-	netif_napi_add_config(adapter->netdev, &q_vector->napi, igb_poll,
-			      v_idx);
+	netif_napi_add(adapter->netdev, &q_vector->napi, igb_poll);
 
 	/* tie q_vector and adapter together */
 	adapter->q_vector[v_idx] = q_vector;
@@ -2521,8 +2520,7 @@ static int igb_set_features(struct net_device *netdev,
 static int igb_ndo_fdb_add(struct ndmsg *ndm, struct nlattr *tb[],
 			   struct net_device *dev,
 			   const unsigned char *addr, u16 vid,
-			   u16 flags, bool *notified,
-			   struct netlink_ext_ack *extack)
+			   u16 flags, struct netlink_ext_ack *extack)
 {
 	/* guarantee we can provide a unique filter for the unicast address */
 	if (is_unicast_ether_addr(addr) || is_link_local_ether_addr(addr)) {

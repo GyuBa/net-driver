@@ -5,6 +5,17 @@
 #include <linux/device.h>
 #include <linux/pci.h>
 #include <linux/ptp_classify.h>
+#include <linux/version.h>
+
+#include <linux/version.h>
+
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6,11,0)
+#define IGB_SET_EXTTS_FLAGS(info, flags)   do { } while (0)
+#else
+#define IGB_SET_EXTTS_FLAGS(info, flags)   \
+        do { (info).supported_extts_flags = (flags); } while (0)
+#endif
+
 
 #include "igb.h"
 
@@ -1342,9 +1353,7 @@ void igb_ptp_init(struct igb_adapter *adapter)
 		adapter->ptp_caps.n_per_out = IGB_N_PEROUT;
 		adapter->ptp_caps.n_pins = IGB_N_SDP;
 		adapter->ptp_caps.pps = 0;
-		adapter->ptp_caps.supported_extts_flags = PTP_RISING_EDGE |
-							  PTP_FALLING_EDGE |
-							  PTP_STRICT_FLAGS;
+		IGB_SET_EXTTS_FLAGS(adapter->ptp_caps, PTP_RISKING_EDGE | PTP_FALLING_EDGE | PTP_STRICT_FLAGS);
 		adapter->ptp_caps.pin_config = adapter->sdp_config;
 		adapter->ptp_caps.adjfine = igb_ptp_adjfine_82580;
 		adapter->ptp_caps.adjtime = igb_ptp_adjtime_82576;
@@ -1367,9 +1376,7 @@ void igb_ptp_init(struct igb_adapter *adapter)
 		adapter->ptp_caps.n_ext_ts = IGB_N_EXTTS;
 		adapter->ptp_caps.n_per_out = IGB_N_PEROUT;
 		adapter->ptp_caps.n_pins = IGB_N_SDP;
-		adapter->ptp_caps.supported_extts_flags = PTP_RISING_EDGE |
-							  PTP_FALLING_EDGE |
-							  PTP_STRICT_FLAGS;
+		IGB_SET_EXTTS_FLAGS(adapter->ptp_caps, PTP_RISKING_EDGE | PTP_FALLING_EDGE | PTP_STRICT_FLAGS);
 		adapter->ptp_caps.pps = 1;
 		adapter->ptp_caps.pin_config = adapter->sdp_config;
 		adapter->ptp_caps.adjfine = igb_ptp_adjfine_82580;
